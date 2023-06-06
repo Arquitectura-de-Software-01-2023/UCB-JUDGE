@@ -1,0 +1,49 @@
+.submission-result {
+    width: 70%;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+.submission-result h1 {
+    text-align: center;
+}
+
+.submission-result h2 {
+    margin-top: 16px !important;
+    margin-bottom: 8px !important;
+}
+
+.testcase-results {
+    display: flex;
+}
+
+.testcase-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-right: 4px;
+    border: 1px solid lightgray;
+}
+
+.verdict-circle {
+    display: flex;
+    align-items: center;
+}
+
+.verdict-circle img {
+    margin-right: 4px;
+}
+
+.testcase-circle img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.testcase-circle.ac, .testcase-circle.wa {
+    border: 1px solid transparent;
+}
+
+.code-editor {
+    height: 500px;
+}

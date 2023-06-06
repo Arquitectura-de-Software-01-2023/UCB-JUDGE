@@ -1,0 +1,44 @@
+<mat-card-content>
+  <div class="profile-field">
+    <span class="field-label">Nombre:</span>
+    <div class="field-box">
+      <span class="field-value">{{ keycloakUserDto?.firstName }}</span>
+    </div>
+  </div>
+  <div class="profile-field">
+    <span class="field-label">Apellido:</span>
+    <div class="field-box">
+      <span class="field-value">{{ keycloakUserDto?.lastName }}</span>
+    </div>
+  </div>
+  <div class="profile-field">
+    <span class="field-label">Correo Electrónico:</span>
+    <div class="field-box">
+      <span class="field-value">{{ keycloakUserDto?.email }}</span>
+    </div>
+  </div>
+  <div class="profile-field">
+    <span class="field-label">Nombre de Usuario:</span>
+    <div class="field-box">
+      <span class="field-value">{{ keycloakUserDto?.username }}</span>
+    </div>
+  </div>
+  <div class="profile-field">
+    <span class="field-label">Correo Electrónico Verificado:</span>
+    <div class="field-box">
+      <span class="field-value">{{ keycloakUserDto?.emailVerified ? 'Yes' : 'No' }}</span>
+    </div>
+  </div>
+  <div class="profile-field">
+    <span class="field-label">Sede:</span>
+    <div class="field-box">
+      <span class="field-value">{{ campusMajorDto?.campus?.name }}</span>
+    </div>
+  </div>
+  <div class="profile-field">
+    <span class="field-label">Carrera:</span>
+    <div class="field-box">
+      <span class="field-value">{{ campusMajorDto?.major?.name }}</span>
+    </div>
+  </div>
+</mat-card-content>

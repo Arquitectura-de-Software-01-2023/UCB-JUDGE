@@ -1,0 +1,20 @@
+.submission {
+    width: 70%;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+.submission h1 {
+    text-align: center;
+}
+
+.code-editor {
+    height: 550px;
+}
+
+.submit {
+    width: 100%;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+}

@@ -1,0 +1,95 @@
+###############################
+#
+#       UCB-JUDGE - v1.0
+#
+###############################
+
+version: "3.7"
+
+networks:
+  pocketnet:
+    name: network-ucb-judge
+    driver: bridge
+
+services:
+  keycloak:
+    container_name: uj-keycloak
+    image: quay.io/keycloak/keycloak:21.0.1
+    user: root
+    command: start-dev
+    restart: always
+    ports:
+      - "8090:8090"
+    environment:
+      DB_VENDOR: h2
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_HTTP_PORT: 8090
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/keycloak:/opt/keycloak/data
+    networks:
+      - pocketnet
+
+  zipkin:
+    container_name: uj-zipkin
+    image: openzipkin/zipkin
+    user: root
+    restart: always
+    ports:
+      - "9411:9411"
+    networks:
+      - pocketnet
+
+  config-server:
+    container_name: uj-config-server
+    image: ucbjudge/uj-config-server:1.1.0
+    user: root
+    ports:
+      - "8888:8888"
+    environment:
+      PORT: ${CONFIG_SERVER_PORT}
+      CONFIG_SERVER_USER: ${CONFIG_SERVER_USER}
+      CONFIG_SERVER_PASSWORD: ${CONFIG_SERVER_PASSWORD}
+      GIT_REPO_URI: ${GIT_REPO_URI}
+      HOST_KEY: ${HOST_KEY}
+      PRIVATE_KEY_PATH: ${PRIVATE_KEY_PATH}
+      ENCRYPT_KEY: ${ENCRYPT_KEY}
+      LOGSTASH_SERVER_URI: ${LOGSTASH_SERVER_URI}
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/config-server:/opt/ucb-judge/logs/uj-config-server
+    networks:
+      - pocketnet
+
+  minio:
+    container_name: uj-minio
+    image: minio/minio
+    user: root
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9090:9090"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/minio:/data
+    command: server /data --console-address ":9090"
+    networks:
+      - pocketnet
+
+  rabbitmq:
+    container_name: uj-rabbitmq
+    image: rabbitmq:3-management-alpine
+    user: root
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USERNAME}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/rabbitmq:/var/lib/rabbitmq
+      - ~/Desktop/SIS-311/ucb-judge/rabbitmq/log:/var/log/rabbitmq
+    networks:
+      - pocketnet

@@ -1,0 +1,234 @@
+###############################
+#
+#       UCB-JUDGE - v1.0
+#
+###############################
+
+version: "3.7"
+networks:
+  network-ucb-judge:
+    external: true
+
+x-common-environment: &common-environment
+  CONFIG_SERVER_URI: ${CONFIG_SERVER_BASE_URI}
+  EUREKA_SERVER_URI: ${EUREKA_SERVER_URI}
+  CONFIG_SERVER_PROFILE: ${CONFIG_SERVER_PROFILE}
+  ZIPKIN_SERVER_URI: ${ZIPKIN_SERVER_URI}
+  LOGSTASH_SERVER_URI: ${LOGSTASH_SERVER_URI}
+
+x-common-postgres-environment: &common-postgres-environment
+  POSTGRES_USERNAME: ${POSTGRES_USERNAME}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_URL: ${POSTGRES_URL}
+
+x-common-keycloak-environment: &common-keycloak-environment
+  KEYCLOAK_SERVER_URI: ${KEYCLOAK_SERVER_URI}
+  KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+
+x-common-minio-environment: &common-minio-environment
+  MINIO_SERVER_URI: ${MINIO_SERVER_URI}
+  MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+  MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+
+x-common-rabbitmq-environment: &common-rabbitmq-environment
+  RABBITMQ_HOST: ${RABBITMQ_HOST}
+  RABBITMQ_PORT: ${RABBITMQ_PORT}
+  RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+  RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+  RABBITMQ_VIRTUAL_HOST: ${RABBITMQ_VIRTUAL_HOST}
+
+services:
+  postgres:
+    container_name: uj-postgres
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      <<: *common-postgres-environment
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/postgres:/var/lib/postgresql/data
+    networks:
+      - network-ucb-judge
+
+  service-discovery:
+    container_name: uj-service-discovery
+    restart: always
+    ports:
+      - "8711:8711"
+    image: ucbjudge/uj-service-discovery:1.2.0
+    environment:
+      PORT: ${UJ_SERVICE_DISCOVERY_PORT}
+      <<: *common-environment
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/service-discovery:/opt/ucb-judge/logs/uj-service-discovery
+    networks:
+      - network-ucb-judge
+
+  gateway:
+    container_name: uj-gateway
+    image: ucbjudge/uj-gateway:1.2.0
+    restart: always
+    ports:
+      - "8282:8282"
+    environment:
+      PORT: ${UJ_GATEWAY_PORT}
+      <<: *common-environment
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/gateway:/opt/ucb-judge/logs/uj-gateway
+    depends_on:
+      - service-discovery
+    networks:
+      - network-ucb-judge
+
+  users:
+    container_name: uj-users
+    image: ucbjudge/uj-users:1.2.0
+    restart: always
+    environment:
+        PORT: ${UJ_USERS_PORT}
+        FRONTEND_KEYCLOAK_CLIENT_ID: ${FRONTEND_KEYCLOAK_CLIENT_ID}
+        KEYCLOAK_CLIENT_ID: ${KEYCLOAK_UJ_USERS_CLIENT_ID}
+        KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_UJ_USERS_CLIENT_SECRET}
+        <<: *common-postgres-environment
+        <<: *common-environment
+        <<: *common-keycloak-environment
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/users:/opt/ucb-judge/logs/uj-users
+    depends_on:
+      - service-discovery
+      - postgres
+    networks:
+      - network-ucb-judge
+
+  judge:
+    container_name: uj-judge
+    image: ucbjudge/uj-judge:1.2.0
+    restart: always
+    environment:
+      PORT: ${UJ_JUDGE_PORT}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_UJ_JUDGE_CLIENT_ID}
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_UJ_JUDGE_CLIENT_SECRET}
+      AWS_CODE_RUNNER_URL: ${AWS_CODE_RUNNER_URL}
+      AWS_CODE_RUNNER_KEY: ${AWS_CODE_RUNNER_KEY}
+      <<: *common-environment
+      <<: *common-postgres-environment
+      <<: *common-keycloak-environment
+      <<: *common-rabbitmq-environment
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/judge:/opt/ucb-judge/logs/uj-judge
+    depends_on:
+      - service-discovery
+      - postgres
+    networks:
+      - network-ucb-judge
+
+  problems:
+    container_name: uj-problems
+    image: ucbjudge/uj-problems:1.2.0
+    restart: always
+    environment:
+      PORT: ${UJ_PROBLEMS_PORT}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_UJ_PROBLEMS_CLIENT_ID}
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_UJ_PROBLEMS_CLIENT_SECRET}
+      <<: *common-environment
+      <<: *common-postgres-environment
+      <<: *common-keycloak-environment
+      <<: *common-minio-environment
+    depends_on:
+      - service-discovery
+      - postgres
+    volumes:
+        - ~/Desktop/SIS-311/ucb-judge/problems:/opt/ucb-judge/logs/uj-problems
+    networks:
+      - network-ucb-judge
+
+  file-uploader:
+    container_name: uj-file-uploader
+    image: ucbjudge/uj-file-uploader:1.2.0
+    restart: always
+    environment:
+      PORT: ${UJ_FILE_UPLOADER_PORT}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_UJ_FILE_UPLOADER_CLIENT_ID}
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_UJ_FILE_UPLOADER_CLIENT_SECRET}
+      <<: *common-environment
+      <<: *common-postgres-environment
+      <<: *common-keycloak-environment
+      <<: *common-minio-environment
+    depends_on:
+      - service-discovery
+      - postgres
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/file-uploader:/opt/ucb-judge/logs/uj-file-uploader
+    networks:
+      - network-ucb-judge
+
+  submissions:
+    container_name: uj-submissions
+    image: ucbjudge/uj-submissions:1.5.0
+    restart: always
+    environment:
+      PORT: ${UJ_SUBMISSIONS_PORT}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_UJ_SUBMISSIONS_CLIENT_ID}
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_UJ_SUBMISSIONS_CLIENT_SECRET}
+      <<: *common-environment
+      <<: *common-postgres-environment
+      <<: *common-keycloak-environment
+      <<: *common-rabbitmq-environment
+      <<: *common-minio-environment
+    depends_on:
+      - service-discovery
+      - postgres
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/submissions:/opt/ucb-judge/logs/uj-submissions
+    networks:
+      - network-ucb-judge
+
+  subjects:
+    container_name: uj-subjects
+    image: ucbjudge/uj-subjects:1.3.0
+    restart: always
+    environment:
+      PORT: ${UJ_SUBJECTS_PORT}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_UJ_SUBJECTS_CLIENT_ID}
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_UJ_SUBJECTS_CLIENT_SECRET}
+      <<: *common-environment
+      <<: *common-postgres-environment
+      <<: *common-keycloak-environment
+    depends_on:
+      - service-discovery
+      - postgres
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/subjects:/opt/ucb-judge/logs/uj-subjects
+    networks:
+      - network-ucb-judge
+
+  contests:
+    container_name: uj-contests
+    image: ucbjudge/uj-contests:1.3.0
+    restart: always
+    environment:
+      PORT: ${UJ_CONTESTS_PORT}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_UJ_CONTESTS_CLIENT_ID}
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_UJ_CONTESTS_CLIENT_SECRET}
+      <<: *common-environment
+      <<: *common-postgres-environment
+      <<: *common-keycloak-environment
+    depends_on:
+      - service-discovery
+      - postgres
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/contests:/opt/ucb-judge/logs/uj-contests
+    networks:
+      - network-ucb-judge
+
+  frontend:
+    container_name: uj-frontend
+    image: ucbjudge/uj-frontend:1.1.0
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/angular/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - network-ucb-judge

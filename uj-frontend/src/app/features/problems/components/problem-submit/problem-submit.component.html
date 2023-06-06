@@ -1,0 +1,25 @@
+<app-navbar></app-navbar>
+<div class="submission">
+  <h1>{{problem.title || ""}}</h1>
+  <h2>Enviar solución</h2>
+  <form [formGroup]="submissionForm">
+    <h4>Lenguaje</h4>
+    <mat-form-field>
+      <mat-select (selectionChange)="setLanguage($event)">
+        <mat-option *ngFor="let language of admittedLanguages" [value]="language">
+          {{language.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <ngs-code-editor
+        [theme]="codeEditorTheme"
+        [codeModel]="codeModel"
+        [options]="options"
+        (valueChanged)="onCodeChanged($event)"
+        class="code-editor"
+    ></ngs-code-editor>
+  </form>
+  <div class="submit">
+    <button mat-raised-button color="primary" (click)="submitForm()">Enviar</button>
+  </div>
+</div>

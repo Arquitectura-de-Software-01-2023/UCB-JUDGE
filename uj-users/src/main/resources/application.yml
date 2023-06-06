@@ -1,0 +1,74 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: uj-users
+  zipkin:
+    base-url: ${ZIPKIN_SERVER_URI:http://localhost:9411}
+  datasource:
+    type: org.postgresql.jdbc2.optional.SimpleDataSource
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:mysecretpassword}
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/db_ucb_judge}
+    jpa:
+      hibernate:
+        ddl-auto: none
+
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URI:http://localhost:8711/eureka/}
+
+keycloak:
+  auth-server-url: ${KEYCLOAK_SERVER_URI:http://localhost:8090}
+  autodetect-bearer-only: true
+  credentials:
+    secret: ${KEYCLOAK_CLIENT_SECRET:u7EKAhVj9COtvqByeUhCZsQIZQyn8t6s}
+  realm: ${KEYCLOAK_REALM:ucb-judge}
+  resource: ${KEYCLOAK_CLIENT_ID:uj-users}
+  ssl-required: none
+  use-resource-role-mappings: false
+  security-constraints:
+    - auth-roles:
+          - uj-users-access
+      security-collections:
+        - name: Find users related methods
+          patterns:
+            - /api/v1/users
+            - /api/v1/users/group/*
+          methods:
+            - GET
+
+    - auth-roles:
+        - uj-users-access
+        - professor
+      security-collections:
+        - name: Professor Creation
+          patterns:
+            - /api/v1/users/professor
+          methods:
+            - POST
+
+    - auth-roles:
+        - common-user
+        - uj-users-access
+      security-collections:
+        - name: Profile CRUD operations
+          patterns:
+            - /api/v1/users/profile/*
+          omitted-methods:
+            - OPTIONS
+
+    - auth-roles:
+        - uj-users-access
+      security-collections:
+        - name: User existence
+          patterns:
+            - /api/v1/users/professors
+            - /api/v1/users/students
+          methods:
+            - GET
+
+frontend-client-id: ${FRONTEND_KEYCLOAK_CLIENT_ID:uj-frontend}

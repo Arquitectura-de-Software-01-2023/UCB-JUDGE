@@ -1,0 +1,131 @@
+###############################
+#
+#       UCB-JUDGE - v1.0
+#
+###############################
+
+version: "3.7"
+
+networks:
+  elknet:
+    name: elk-ucb-judge
+    driver: bridge
+
+services:
+  setup:
+    container_name: uj-setup
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    user: "0"
+    environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - KIBANA_PASSWORD=${KIBANA_PASSWORD}
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/elk/certs:/usr/share/elasticsearch/config/certs
+      - ./setup.sh:/tmp/setup.sh
+    command: /tmp/setup.sh
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f config/certs/elasticsearch/elasticsearch.crt ]"]
+      interval: 1s
+      timeout: 5s
+      retries: 120
+    networks:
+      - elknet
+
+  elasticsearch:
+    container_name: uj-elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    restart: always
+    ports:
+      - "9200:9200"
+    environment:
+      node.name: elasticsearch
+      cluster.name: ${CLUSTER_NAME}
+      discovery.type: single-node
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      bootstrap.memory_lock: "true"
+      xpack.security.enabled: "true"
+      xpack.security.http.ssl.enabled: "true"
+      xpack.security.http.ssl.key: /usr/share/elasticsearch/config/certs/elasticsearch/elasticsearch.key
+      xpack.security.http.ssl.certificate: /usr/share/elasticsearch/config/certs/elasticsearch/elasticsearch.crt
+      xpack.security.http.ssl.certificate_authorities: /usr/share/elasticsearch/config/certs/ca/ca.crt
+      xpack.security.transport.ssl.enabled: "true"
+      xpack.security.transport.ssl.key: /usr/share/elasticsearch/config/certs/elasticsearch/elasticsearch.key
+      xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/certs/elasticsearch/elasticsearch.crt
+      xpack.security.transport.ssl.certificate_authorities: /usr/share/elasticsearch/config/certs/ca/ca.crt
+      xpack.security.transport.ssl.verification_mode: certificate
+      xpack.license.self_generated.type: ${LICENSE}
+      xpack.security.authc.api_key.enabled: "true"
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/elk/certs:/usr/share/elasticsearch/config/certs
+      - ~/Desktop/SIS-311/ucb-judge/elk/elasticsearch:/usr/share/elasticsearch/data
+    depends_on:
+      setup:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+    networks:
+      - elknet
+
+  logstash:
+    container_name: uj-logstash
+    image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
+    user: root
+    restart: always
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    environment:
+      xpack.monitoring.enabled: "false"
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/elk/certs:/usr/share/logstash/certs
+      - ~/Desktop/SIS-311/ucb-judge/elk/logstash:/usr/share/logstash/data
+      - ./logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+    networks:
+      - elknet
+
+  kibana:
+    container_name: uj-kibana
+    image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+    restart: always
+    ports:
+      - "5601:5601"
+    environment:
+      - SERVERNAME=kibana
+      - ELASTICSEARCH_HOSTS=${ELASTICSEARCH_HOSTS}
+      - ELASTICSEARCH_USERNAME=${KIBANA_USERNAME}
+      - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
+      - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
+      - XPACK_SECURITY_ENCRYPTIONKEY=${ENCRYPTION_KEY}
+      - XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY=${ENCRYPTION_KEY}
+      - XPACK_REPORTING_ENCRYPTIONKEY=${ENCRYPTION_KEY}
+    volumes:
+      - ~/Desktop/SIS-311/ucb-judge/elk/certs:/usr/share/kibana/config/certs
+      - ~/Desktop/SIS-311/ucb-judge/elk/kibana:/usr/share/kibana/data
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+    networks:
+      - elknet

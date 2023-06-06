@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: uj-submissions
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:uj-submissions}
+    password: ${RABBITMQ_PASSWORD:uj-submissions123}
+    virtual-host: ${RABBITMQ_VIRTUAL_HOST:ucb-judge-rabbit}
+  datasource:
+    type: org.postgresql.jdbc2.optional.SimpleDataSource
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:mysecretpassword}
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/db_ucb_judge}
+    jpa:
+      hibernate:
+        ddl-auto: none
+  zipkin:
+    base-url: ${ZIPKIN_SERVER_URI:http://localhost:9411}
+
+server:
+  port: ${PORT:8084}
+
+eureka:
+  client:
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER_URI:http://localhost:8711/eureka}
+
+keycloak:
+  auth-server-url: ${KEYCLOAK_SERVER_URI:http://localhost:8090/}
+  autodetect-bearer-only: true
+  credentials:
+    secret: ${KEYCLOAK_CLIENT_SECRET:ttd1wKBGoNCidGz3Hlh4oQMWayhWSYr0}
+  realm: ${KEYCLOAK_REALM:ucb-judge}
+  resource: ${KEYCLOAK_CLIENT_ID:uj-submissions}
+  ssl-required: none
+  use-resource-role-mappings: false
+  security-constraints:
+    - auth-roles:
+        - student
+      security-collections:
+        - name: Submit a solution
+          omitted-methods:
+            - OPTIONS
+          patterns:
+            - /api/v1/submissions
+            - /api/v1/submissions/*
+
+minio:
+  url: ${MINIO_SERVER_URI:http://localhost:9000}
+  access:
+    key: ${MINIO_ACCESS_KEY:c5hPg2BgTgDxxbeHNhwF}
+    secret: ${MINIO_SECRET_KEY:lDFhBBL83nE5xn5rz6VZWbwxWgtJIWeTTWae9AMv}

@@ -1,0 +1,91 @@
+
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+.container {
+  background-image: url('/assets/images/wave-bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  height: 75vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #673AB7;
+}
+
+.container h4{
+  font-size: 24px;
+  font-weight: 400;
+  color: #FFF;
+  margin-bottom: 30px !important;
+}
+
+.container h1 {
+  font-size: 48px;
+  font-weight: 700;
+  color: #FFF;
+  margin-bottom: 30px !important;
+}
+
+.container p {
+  font-size: 20px;
+  color: #FFF;
+  line-height: 1.5;
+  max-width: 50%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.button-container {
+  margin-top: 20px;
+  margin-bottom: 100px;
+}
+
+.button-container button {
+  font-size: 18px;
+  margin-right: 20px;
+}
+/* Title */
+.custom-card {
+  width: 70%;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.paragraph {
+  font-size: 18px;
+  line-height: 1.5;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/*Problem List Table*/
+.problem-table {
+  width: 70%;
+  margin: 2rem auto 2rem auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.mat-mdc-row .mat-mdc-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  border-color: lightgray;
+}

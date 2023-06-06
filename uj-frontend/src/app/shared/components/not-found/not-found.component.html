@@ -1,0 +1,23 @@
+<app-navbar></app-navbar>
+<div class="container">
+  <mat-card class="error-card">
+    <mat-card-header>
+      <mat-card-title>ERROR 404</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="error-content">
+        <div class="error-text">
+          <p class="error-message">No podemos encontrar la página que estás buscando.</p>
+          <p class="error-message">Alguien puede haberla eliminado, cambiado su nombre o no estar disponible temporalmente.</p>
+          <p class="error-message">Verifica la ortografía en la barra de direcciones o intenta abrir la página de inicio de este sitio para buscar o navegar por el contenido.</p>
+        </div>
+        <div class="error-image-container">
+          <img class="error-image" src="assets/images/404-error-image.png" alt="Error Image">
+        </div>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" routerLink="/homepage">Ir a la página de inicio</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

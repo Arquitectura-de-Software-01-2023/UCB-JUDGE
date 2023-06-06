@@ -1,0 +1,49 @@
+mat-card-content {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.profile-field {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.field-label {
+  flex-basis: 35%;
+  font-weight: bold;
+  text-align: right;
+  margin-right: 1rem;
+  font-size: 20px;
+}
+
+.field-box {
+  flex-basis: 40%;
+  display: flex;
+  flex-direction: column;
+}
+
+.button-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.button-section button {
+  margin-top: 1rem;
+  width: 50%;
+}
+
+.disclaimer-box {
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.disclaimer {
+  font-size: 16px;
+  line-height: 1.5;
+}

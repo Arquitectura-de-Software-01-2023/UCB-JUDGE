@@ -1,0 +1,82 @@
+server:
+  port: 8282
+
+spring:
+  application:
+    name: uj-gateway
+  zipkin:
+    base-url: ${ZIPKIN_SERVER_URI:http://localhost:9411}
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedHeaders:
+              - "Content-Type"
+              - "Origin"
+              - "Accept"
+              - "Authorization"
+              - "Content-Length"
+              - "X-Requested-With"
+            allowedOrigins:
+              - "http://localhost:4200"
+              - "http://angular:4200"
+              - "http://157.230.56.211:80"
+              - "http://157.230.56.211"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+      routes:
+        - id: uj-users
+          uri: lb://uj-users
+          predicates:
+            - Path=/uj-users/**
+          filters:
+            - RewritePath=/uj-users/(?<path>.*), /$\{path}
+        - id: uj-problems
+          uri: lb://uj-problems
+          predicates:
+            - Path=/uj-problems/**
+          filters:
+            - RewritePath=/uj-problems/(?<path>.*), /$\{path}
+        - id: uj-submissions
+          uri: lb://uj-submissions
+          predicates:
+            - Path=/uj-submissions/**
+          filters:
+            - RewritePath=/uj-submissions/(?<path>.*), /$\{path}
+        - id: uj-file-uploader
+          uri: lb://uj-file-uploader
+          predicates:
+            - Path=/uj-file-uploader/**
+          filters:
+            - RewritePath=/uj-file-uploader/(?<path>.*), /$\{path}
+        - id: uj-subjects
+          uri: lb://uj-subjects
+          predicates:
+            - Path=/uj-subjects/**
+          filters:
+            - RewritePath=/uj-subjects/(?<path>.*), /$\{path}
+        - id: uj-contests
+          uri: lb://uj-contests
+          predicates:
+            - Path=/uj-contests/**
+          filters:
+            - RewritePath=/uj-contests/(?<path>.*), /$\{path}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: gateway
+
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URI:http://localhost:8711/eureka/}

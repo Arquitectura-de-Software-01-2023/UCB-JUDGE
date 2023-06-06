@@ -1,0 +1,24 @@
+<app-navbar></app-navbar>
+
+<div class="container">
+  <mat-card class="error-card">
+    <mat-card-header>
+      <mat-card-title>ERROR 403</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="error-content">
+        <div class="error-text">
+          <p class="error-message">No tienes permiso para acceder a esta página.</p>
+          <p class="error-message">Verifica que estés autorizado o contacta al administrador del sitio.</p>
+          <p class="error-message">Si crees que esto es un error, intenta iniciar sesión nuevamente o vuelve a cargar la página.</p>
+        </div>
+        <div class="error-image-container">
+          <img class="error-image" src="assets/images/403-error-image.png" alt="Error Image">
+        </div>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" routerLink="/homepage">Ir a la página de inicio</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

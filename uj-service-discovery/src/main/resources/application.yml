@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: uj-service-discovery
+  zipkin:
+    base-url: ${ZIPKIN_SERVER_URI:http://localhost:9411}
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER_URI:http://localhost:8711/eureka/}
+
+server:
+  port: ${PORT:8711}

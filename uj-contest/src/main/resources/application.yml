@@ -1,0 +1,53 @@
+server:
+  port: ${PORT:8086}
+
+spring:
+  application:
+    name: uj-contests
+  zipkin:
+    base-url: ${ZIPKIN_SERVER_URI:http://localhost:9411}
+  datasource:
+    type: org.postgresql.jdbc2.optional.SimpleDataSource
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:mysecretpassword}
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/db_ucb_judge}
+    jpa:
+      hibernate:
+        ddl-auto: none
+
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URI:http://localhost:8711/eureka/}
+
+keycloak:
+  auth-server-url: ${KEYCLOAK_SERVER_URI:http://localhost:8090}
+  autodetect-bearer-only: true
+  credentials:
+    secret: ${KEYCLOAK_CLIENT_SECRET:fwdl2KIB09PoKJ9xr1mnLzRbt6XTRihd}
+  realm: ${KEYCLOAK_REALM:ucb-judge}
+  resource: ${KEYCLOAK_CLIENT_ID:uj-contests}
+  ssl-required: none
+  use-resource-role-mappings: false
+  security-constraints:
+    - auth-roles:
+        - professor
+        - student
+        - uj-contest-access
+      security-collections:
+        - name: contests
+          omitted-methods:
+            - OPTIONS
+          patterns:
+            - /api/v1/contests/*
+#    - auth-roles:
+#        - student
+#        - professor
+#        - uj-problems-access
+#      security-collections:
+#        - name: Get problems
+#          methods:
+#            - GET
+#          patterns:
+#            - /api/v1/problems

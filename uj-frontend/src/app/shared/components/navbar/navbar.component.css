@@ -1,0 +1,28 @@
+mat-toolbar-row {
+    padding: 0 24px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    margin-right: 8px;
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+.navbar-option {
+    font-size: 16px;
+}
+
+.navbar-option img {
+    margin-right: 4px;
+}
+
+.navbar-option:not(:last-child) {
+    margin-right: 12px;
+}

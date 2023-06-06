@@ -1,0 +1,82 @@
+<div class="register-container">
+  <div class="image-section">
+    <img src="/assets/images/register-bg.png" alt="Registration Image" />
+  </div>
+  <div class="form-section">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <mat-card>
+        <mat-card-title>Formulario de Registro</mat-card-title>
+        <mat-card-content>
+          <div class="name-section">
+            <mat-form-field>
+              <mat-label>Nombre</mat-label>
+              <input matInput formControlName="firstName" placeholder="Nombre" />
+              <mat-error *ngIf="registerForm.controls.firstName.hasError('required')">
+                El nombre es requerido
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Apellido</mat-label>
+              <input matInput formControlName="lastName" placeholder="Apellido" />
+              <mat-error *ngIf="registerForm.controls.lastName.hasError('required')">
+                El apellido es requerido
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <mat-form-field>
+            <mat-label>Correo Electrónico</mat-label>
+            <input matInput formControlName="email" placeholder="Correo Electrónico" />
+            <mat-error *ngIf="registerForm.controls.email.hasError('required')">
+              El correo electrónico es requerido
+            </mat-error>
+            <mat-error *ngIf="registerForm.controls.email.hasError('email')">
+              El correo electrónico no es válido
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Nombre de Usuario</mat-label>
+            <input matInput formControlName="username" placeholder="Nombre de Usuario" />
+            <mat-error *ngIf="registerForm.controls.username.hasError('required')">
+              El nombre de usuario es requerido
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Contraseña</mat-label>
+            <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Contraseña" />
+            <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            <mat-error *ngIf="registerForm.controls.password.hasError('required')">
+              La contraseña es requerida
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Confirmar Contraseña</mat-label>
+            <input matInput formControlName="confirmPassword" [type]="hideConfirmPassword ? 'password' : 'text'" placeholder="Confirmar Contraseña" />
+            <mat-icon matSuffix (click)="hideConfirmPassword = !hideConfirmPassword">{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            <mat-error *ngIf="registerForm.controls.confirmPassword.hasError('required')">
+              La confirmación de contraseña es requerida
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Sede</mat-label>
+            <mat-select formControlName="campus" placeholder="Sede" (selectionChange)="onCampusChange($event)">
+              <mat-option *ngFor="let campus of campuses" [value]="campus.campusId" >
+                {{ campus.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Carrera</mat-label>
+            <mat-select formControlName="major" placeholder="Carrera" (selectionChange)="onMajorChange($event)">
+              <mat-option *ngFor="let campusMajor of campusesMajors" [value]="campusMajor.campusMajorId" >
+                {{ campusMajor.major.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-raised-button color="primary" type="submit">Registrarse</button>
+          <a routerLink="/problems" mat-button color="accent" class="login-link">Ya tienes una cuenta? Inicia Sesión</a>
+          <button mat-button color="primary" routerLink="/">Regresar a la página de inicio</button>
+        </mat-card-content>
+      </mat-card>
+    </form>
+  </div>
+</div>

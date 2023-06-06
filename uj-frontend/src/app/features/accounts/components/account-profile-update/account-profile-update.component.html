@@ -1,0 +1,46 @@
+<mat-card-content>
+  <div class="form-section">
+    <form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+      <div class="profile-field">
+        <span class="field-label">Nombre:</span>
+        <div class="field-box">
+          <mat-form-field>
+            <mat-label>Nombre</mat-label>
+            <input matInput formControlName="firstName" placeholder="Nombre" />
+            <mat-error *ngIf="updateForm.controls.firstName.hasError('required')">
+              El nombre es requerido
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="profile-field">
+        <span class="field-label">Apellido:</span>
+        <div class="field-box">
+          <mat-form-field>
+            <mat-label>Apellido</mat-label>
+            <input matInput formControlName="lastName" placeholder="Apellido" />
+            <mat-error *ngIf="updateForm.controls.lastName.hasError('required')">
+              El apellido es requerido
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="profile-field">
+        <span class="field-label">Correo Electrónico:</span>
+        <div class="field-box">
+          <mat-form-field>
+            <mat-label>Correo Electrónico</mat-label>
+            <input matInput formControlName="email" placeholder="Correo Electrónico" />
+            <mat-error *ngIf="updateForm.controls.email.hasError('required')">
+              El correo electrónico es requerido
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="button-section">
+        <button mat-raised-button color="primary" type="submit">Guardar Cambios</button>
+        <button mat-raised-button color="accent" type="button" (click)="onCancel()">Descartar Cambios</button>
+      </div>
+    </form>
+  </div>
+</mat-card-content>

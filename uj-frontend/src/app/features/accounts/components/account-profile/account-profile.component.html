@@ -1,0 +1,32 @@
+<app-navbar></app-navbar>
+<mat-card class="info-card">
+  <mat-card-content>
+    <div class="profile-container">
+      <div class="profile-photo">{{ keycloakUserDto?.firstName?.charAt(0) }}{{ keycloakUserDto?.lastName?.charAt(0) }}</div>
+      <div class="profile-details">
+        <h3 class="name">{{keycloakUserDto?.firstName}} {{keycloakUserDto?.lastName}}</h3>
+        <p class="email">{{keycloakUserDto?.email}}</p>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-tab-group>
+  <mat-tab label="Problemas Resueltos">
+    <app-account-profile-submissions></app-account-profile-submissions>
+  </mat-tab>
+  <mat-tab label="Información de Perfil">
+    <app-account-profile-info [keycloakUserDto]="keycloakUserDto" [campusMajorDto]="campusMajorDto"></app-account-profile-info>
+  </mat-tab>
+  <mat-tab label="Actualizar Perfil">
+    <app-account-profile-update [userId]="userId"></app-account-profile-update>
+  </mat-tab>
+  <mat-tab label="Cambiar Contraseña">
+    <app-account-profile-change-password></app-account-profile-change-password>
+  </mat-tab>
+  <mat-tab label="Eliminar Cuenta">
+    <app-account-profile-delete></app-account-profile-delete>
+  </mat-tab>
+</mat-tab-group>
+
+

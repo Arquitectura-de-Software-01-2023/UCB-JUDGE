@@ -1,0 +1,56 @@
+.info-card {
+  margin: 30px !important;
+  display: flex;
+  width: auto;
+  padding: 20px;
+  text-align: start;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.profile-container {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 10px;
+  align-items: center;
+}
+
+.profile-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: indigo;
+  color: white;
+  font-size: 42px;
+  margin-right: 25px;
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.name {
+  font-size: 28px;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.email {
+  font-size: 20px;
+  font-style: italic;
+  color: #888;
+}
+
+mat-tab-group{
+  margin: 25px auto;
+  width: 75%;
+  display: flex;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+

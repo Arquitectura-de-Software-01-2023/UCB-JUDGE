@@ -1,0 +1,45 @@
+<div *ngIf="isAuthenticated; else homePage">
+  <mat-toolbar color="primary">
+    <mat-toolbar-row>
+      <div class="logo">
+        <img src="assets/images/logo.svg" alt="UCB Judge">
+        <h2>UCB Judge</h2>
+      </div>
+      <div class="spacer"></div>
+      <a routerLink="/problems" mat-button class="navbar-option">
+        <img src="assets/images/problem-icon.svg" alt="Problemas">
+        Problemas
+      </a>
+      <a routerLink="/contests" mat-button class="navbar-option">
+        <img src="assets/images/contest-icon.svg" alt="Concursos">
+        Concursos
+      </a>
+      <a routerLink="/contests" mat-button class="navbar-option">
+        <img src="assets/images/subject-icon.svg" alt="Materias">
+        Materias
+      </a>
+      <a routerLink="/profile" mat-button class="navbar-option">
+        <img src="assets/images/profile-icon.svg" alt="Perfil">
+        Perfil
+      </a>
+      <a (click)="logout()" mat-button class="navbar-option">
+        <img src="assets/images/logout-icon.svg" alt="Salir">
+        Salir
+      </a>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</div>
+<!-- Navigation bar for unauthenticated users -->
+<ng-template #homePage>
+  <mat-toolbar color="primary">
+    <mat-toolbar-row>
+
+      <div class="spacer"></div>
+      <div class="logo">
+        <img src="assets/images/logo.svg" alt="UCB Judge">
+        <h2>UCB Judge</h2>
+      </div>
+      <div class="spacer"></div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</ng-template>

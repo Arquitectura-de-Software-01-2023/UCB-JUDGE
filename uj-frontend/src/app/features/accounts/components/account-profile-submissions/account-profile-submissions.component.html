@@ -1,0 +1,47 @@
+<mat-card-content>
+  <div class="mat-elevation-z8 submission-table">
+    <table mat-table [dataSource]="submissions">
+      <ng-container matColumnDef="submissionId">
+        <th mat-header-cell *matHeaderCellDef> # </th>
+        <td mat-cell *matCellDef="let submission"> UJ-{{submission.submissionId}} </td>
+      </ng-container>
+
+      <!-- Problem Title Column -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef> Título del problema</th>
+        <td mat-cell *matCellDef="let submission"> {{submission.problem.title}} </td>
+      </ng-container>
+
+      <!-- Language Column -->
+      <ng-container matColumnDef="language">
+        <th mat-header-cell *matHeaderCellDef> Lenguaje</th>
+        <td mat-cell *matCellDef="let submission"> {{submission.language.name}}</td>
+      </ng-container>
+
+      <!-- Submission Date Column -->
+      <ng-container matColumnDef="submissionDate">
+        <th mat-header-cell *matHeaderCellDef> Fecha de envío</th>
+        <td mat-cell *matCellDef="let submission"> {{submission.submissionDate | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+      </ng-container>
+
+      <!-- Verdict>-->
+      <ng-container matColumnDef="verdict">
+        <th mat-header-cell *matHeaderCellDef> Veredicto</th>
+        <td mat-cell *matCellDef="let submission"> {{submission.verdict.name}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="[ 'submissionId', 'title', 'language', 'submissionDate', 'verdict']"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: [ 'submissionId', 'title', 'language', 'submissionDate', 'verdict']"
+        (click)="goToSubmission(row.submissionId)"
+      ></tr>
+    </table>
+    <mat-paginator
+      [length]="total"
+      [pageSize]="size"
+      [pageSizeOptions]="[5, 10, 15, 20]"
+      (page)="onPageChange($event)"
+    ></mat-paginator>
+  </div>
+</mat-card-content>

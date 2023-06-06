@@ -1,0 +1,59 @@
+.problem-details-container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 2rem 0;
+    display: flex;
+}
+
+.limit-section {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.problem-details-container section {
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.problem-details-description {
+    width: 75%;
+}
+
+.problem-details-metadata {
+    width: 25%;
+    padding-left: 24px;
+}
+
+.problem-title {
+    text-align: center;
+    margin: 24px 0 12px 0 !important;
+}
+
+.problem-text {
+    white-space: pre-line;
+}
+
+.submit {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.testcase {
+    margin-bottom: 12px;
+    width: 60%;
+    border: 1px solid lightgray;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.problem-tags {
+    margin-top: 32px;
+    margin-bottom: 32px;
+}
+
+.problem-languages {
+    margin-top: 32px;
+    margin-bottom: 32px;
+}

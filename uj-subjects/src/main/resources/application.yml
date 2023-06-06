@@ -1,0 +1,75 @@
+server:
+  port: ${PORT:8085}
+
+spring:
+  application:
+    name: uj-subjects
+  zipkin:
+    base-url: ${ZIPKIN_SERVER_URI:http://localhost:9411}
+  datasource:
+    type: org.postgresql.jdbc2.optional.SimpleDataSource
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:mysecretpassword}
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/db_ucb_judge}
+    jpa:
+      hibernate:
+        ddl-auto: none
+
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URI:http://localhost:8711/eureka/}
+
+keycloak:
+  auth-server-url: ${KEYCLOAK_SERVER_URI:http://localhost:8090}
+  autodetect-bearer-only: true
+  credentials:
+    secret: ${KEYCLOAK_CLIENT_SECRET:zejgeq1Lz6rwLUb79fBSG9YVW6uMffrb}
+  realm: ${KEYCLOAK_REALM:ucb-judge}
+  resource: ${KEYCLOAK_CLIENT_ID:uj-subjects}
+  ssl-required: none
+  use-resource-role-mappings: false
+  security-constraints:
+    - auth-roles:
+        - professor
+        - uj-subjects-access
+      security-collections:
+        - name: Subject CRUD operations
+          omitted-methods:
+            - OPTIONS
+          patterns:
+            - /api/v1/subjects
+            - /api/v1/subjects/*
+    - auth-roles:
+      - student
+      - professor
+      - uj-subjects-access
+      security-collections:
+        - name: Get subjects
+          methods:
+            - GET
+          patterns:
+            - /api/v1/subjects
+            - /api/v1/subjects/*
+    - auth-roles:
+      - student
+      - professor
+      - uj-subjects-access
+      security-collections:
+        - name: Get practices
+          methods:
+            - GET
+          patterns:
+            - /api/v1/practices/*
+    - auth-roles:
+      - professor
+      - uj-subjects-access
+      security-collections:
+        - name: Post practices
+          methods:
+            - POST
+          patterns:
+            - /api/v1/practices/*
+
+

@@ -1,0 +1,44 @@
+<mat-card-content>
+  <div class="form-section">
+    <div class="disclaimer-box">
+      <div class="disclaimer">
+        <strong>Importante:</strong> Al eliminar una cuenta en UCB Judge, la autenticación y la información personal relacionada con la cuenta serán eliminadas.
+        <br>
+        Para solicitar la eliminación de la cuenta, ingrese la siguiente cadena de texto exactamente como se muestra en el recuadro a continuación:
+        <br>
+        <em>Deseo eliminar permanentemente mi cuenta de UCB Judge</em>
+      </div>
+    </div>
+    <form [formGroup]="deleteForm" (ngSubmit)="onSubmit()">
+      <div class="profile-field">
+        <span class="field-label">Solicitar Eliminación de Cuenta:</span>
+        <div class="field-box">
+          <mat-form-field>
+            <mat-label>Mensaje</mat-label>
+            <input matInput formControlName="delete" placeholder="Mensaje" />
+            <mat-error *ngIf="deleteForm.controls.delete.hasError('required')">
+              El campo es requerido
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="profile-field">
+        <span class="field-label">Contraseña Actual:</span>
+        <div class="field-box">
+          <mat-form-field>
+            <mat-label>Contraseña Actual</mat-label>
+            <input matInput formControlName="currentPassword" [type]="hideCurrentPassword ? 'password' : 'text'" placeholder="Contraseña Actual" />
+            <mat-icon matSuffix (click)="hideCurrentPassword = !hideCurrentPassword">{{hideCurrentPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            <mat-error *ngIf="deleteForm.controls.currentPassword.hasError('required')">
+              La contraseña actual es requerida
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="button-section">
+        <button mat-raised-button color="primary" type="submit">Eliminar Cuenta</button>
+        <button mat-raised-button color="warn" type="button" (click)="onCancel()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</mat-card-content>

@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: uj-file-uploader
+  datasource:
+    type: org.postgresql.jdbc2.optional.SimpleDataSource
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:mysecretpassword}
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/db_ucb_judge}
+    jpa:
+      hibernate:
+        ddl-auto: none
+  zipkin:
+    base-url: ${ZIPKIN_SERVER_URI:http://localhost:9411}
+
+server:
+  port: ${PORT:8083}
+
+eureka:
+  client:
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER_URI:http://localhost:8711/eureka}
+
+keycloak:
+  auth-server-url: ${KEYCLOAK_SERVER_URI:http://localhost:8090}
+  autodetect-bearer-only: true
+  credentials:
+    secret: ${KEYCLOAK_CLIENT_SECRET:gE3uRAuVXXBcTJyuPPXX0cmjB6YFj4Qp}
+  realm: ${KEYCLOAK_REALM:ucb-judge}
+  resource: ${KEYCLOAK_CLIENT_ID:uj-file-uploader}
+  ssl-required: none
+  use-resource-role-mappings: false
+  security-constraints:
+    - auth-roles:
+        - uj-file-uploader-access
+      security-collections:
+        - name: Allow uploading files
+          methods:
+            - POST
+          patterns:
+            - /api/v1/files
+
+minio:
+  url: ${MINIO_SERVER_URI:http://localhost:9000}
+  access:
+    key: ${MINIO_ACCESS_KEY:c5hPg2BgTgDxxbeHNhwF}
+    secret: ${MINIO_SECRET_KEY:lDFhBBL83nE5xn5rz6VZWbwxWgtJIWeTTWae9AMv}
+
